@@ -23,3 +23,7 @@ hs_err_pid*
 
 # Eclipse auto-generated
 /bin/
+
+# Eclipse
+.classpath
+.project
