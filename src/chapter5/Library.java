@@ -14,15 +14,44 @@ public class Library {
 
 class Bookshelf {
     Book[] books;
+    int size;
     boolean sorted;
+    boolean isFull;
+
+    public Bookshelf() {
+        super();
+        this.books = new Book[100];
+    }
+    
+    /**
+     * 向书架添加一本书。
+     * Add a book to the bookshelf.
+     * @param b 要添加的书。 book to add.
+     * @return 成功则返回 <b>true</b>，如果失败（书架满了）则返回 <b>false</b>。<b>true</b> if success, false if failed (when bookshelf is full).
+     */
+    boolean add(Book b) {
+        if (size >= this.books.length) {
+            return false;
+        } else {
+            this.books[size] = b;
+            size++;
+            return true;
+        }
+    }
 
     void sort() {
-        Arrays.parallelSort(books);
+        Arrays.parallelSort(this.books);
     }
 }
 
+/**
+ * 中国图书馆分类法的22个基本大类。
+ * Chinese Library Classification
+ * @author Faithful-Mind
+ *
+ */
 enum Category {
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z;
+    A, B, C, D, E, F, G, H, I, J, K, N, O, P, Q, R, S, T, U, V, X, Z
 }
 
 class Book implements Comparable<Book> {
@@ -54,7 +83,7 @@ class Press {
 
     @Override
     public String toString() {
-        return "Press [name=" + name + "]";
+        return "Press: [" + name + "]";
     }
 
 }
