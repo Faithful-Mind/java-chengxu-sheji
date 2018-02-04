@@ -10,7 +10,7 @@ import java.util.List;
  * @author Faithful-Mind
  */
 public class Library {
-    int count; // 增加图书次数，与图书ID有关，只增不减。the added book count, associated with id in Book. Can't
+    int count; // 增加图书次数，与图书ID有关，只增不减。 the added book count, associated with id in Book. Can't
                // decrease.
 
     public Library() {
@@ -48,7 +48,7 @@ public class Library {
 class Bookshelf {
     ArrayList<Book> books;
     // boolean sorted; // TODO sort the bookshelf
-    Library lib;
+    Library lib; // 书架所属图书馆。 The library this bookshelf belongs to.
 
     public Bookshelf(Library lib) {
         super();
@@ -91,8 +91,8 @@ class Bookshelf {
         return books.size();
     }
 
-    // void sort() {
-    // Arrays.parallelSort(this.books);
+    // public void sort() {
+    // Collections.sort(this.books);
     // this.sorted = true;
     // }
 }
@@ -144,16 +144,8 @@ class Book implements Comparable<Book> {
 
     @Override
     public String toString() {
-        return "Book [name=" + name + ", press=" + press + ", isbn=" + isbn + ", category=" + category + ", id=" + id
-                + ", isLent=" + lent + "]";
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        return "[" + name + ", press=" + press + ", isbn=" + isbn + ", category=" + category + ", id=" + id + ", "
+                + (lent ? "已借出" : "在库") + "]";
     }
 
     public boolean isLent() {
@@ -179,15 +171,21 @@ class Book implements Comparable<Book> {
     public Category getCategory() {
         return category;
     }
+
+    public int getId() {
+        return id;
+    }
 }
 
-class Person {
+abstract class Person {
     private String name;
 
     public Person(String name) {
         super();
         this.name = name;
     }
+
+    public abstract String getJob();
 
     @Override
     public String toString() {
@@ -201,7 +199,7 @@ class Person {
 }
 
 class Reader extends Person {
-    private boolean isQualified; // true by default
+    private boolean isQualified; // 默认为真。 true by default
     private List<Book> borrowedBooks;
 
     public Reader(String name) {
@@ -225,28 +223,38 @@ class Reader extends Person {
     public boolean borrow(Book b) {
         if (!b.isLent()) {
             if (this.isQualified) {
-                System.out.println(this + "\n\t借走了图书：\n\t\t" + b);
+                System.out.println(this + "\n\t借走了图书：");
 
                 borrowedBooks.add(b);
                 b.setLent(true);
+                // 显示完成后的图书状态。 Show the book state after finished.
+                System.out.println("\t\t" + b);
                 return true;
             }
         }
-        System.out.println(this + "\n\t没能借走图书：\n\t\t" + b);
+        System.err.println(this + "\n\t没能借走图书：\n\t\t" + b);
         return false;
     }
 
     public boolean returnBack(Book b) {
-        System.out.println(this + "\n\t归还了图书：\n\t\t" + b);
+        System.out.println(this + "\n\t归还了图书：");
 
         borrowedBooks.remove(b);
         b.setLent(false);
+        // 显示完成后的图书状态。 Show the book state after finished.
+        System.out.println("\t\t" + b);
         return true;
     }
 
     @Override
+    public String getJob() {
+        return "读者";
+    }
+
+    @Override
     public String toString() {
-        return "读者 " + super.getName() + " [" + (isQualified ? "有" : "没有") + "资格借书" + ", 在借图书=" + borrowedBooks + " ]";
+        return this.getJob() + " " + super.getName() + " " + (isQualified ? "有" : "没有") + "资格借书" + ", 在借图书=" + "{"
+                + borrowedBooks.toString().substring(1, borrowedBooks.toString().length() - 1) + "}";
     }
 
     public boolean isQualified() {
