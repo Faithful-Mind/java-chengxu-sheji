@@ -10,30 +10,68 @@ import java.util.List;
  * @author Faithful-Mind
  */
 public class Library {
+    String name;
     int count; // 增加图书次数，与图书ID有关，只增不减。 the added book count, associated with id in Book. Can't
                // decrease.
+    List<Reader> readers;
 
-    public Library() {
+    public Library(String name) {
         super();
+        this.name = name;
         this.count = 0;
+        this.readers = new ArrayList<Reader>();
+    }
+
+    public boolean addReader(Reader rd) {
+        if (this.readers.add(rd)) {
+            System.out.println("添加了读者：" + rd.getName() + "，\t个性签名：" + rd.getStatus());
+            return true;
+        }
+        System.err.println("添加读者：" + rd.getName() + "失败！");
+        return false;
+    }
+    
+    /**
+     * 建立图书馆。<br/>
+     * Build the Library
+     * 
+     * @param institutionName
+     *            建立图书馆的机构名称<br/>
+     *            Name of the institution to build a library
+     * @return 修建好的图书馆的<b>书架 (Bookshelf对象)</b><br/>
+     *         <b>Bookshelf object</b> of the builded Library
+     */
+    public static Bookshelf build(String institutionName) {
+        System.out.println(institutionName + "图书馆准备中……");
+        String name = institutionName + "图书馆";
+        Library lib = new Library(name);
+        System.out.println("安装书架中……");
+        Bookshelf bs = new Bookshelf(lib);
+        System.out.println(name + "建立完成！");
+        return bs;
     }
 
     public static void main(String[] args) {
-        Library lib = new Library();
-        Bookshelf bs = new Bookshelf(lib);
+        Bookshelf bs = build("XX大学");
 
         Reader xiaom = new Reader("小明"); // 读者小明
         Reader y = new Reader("小袁", () -> "这个人很勤快，签名都是手打的。");
         Reader l = new Reader("小刘", () -> "学问笃实生光辉");
 
+        bs.lib.addReader(xiaom);
+        bs.lib.addReader(y);
+        bs.lib.addReader(l);
+
         Book hfPython = bs.add("Head First Python", "O'Reilly", "9781449382674", Category.T);
         Book algs = bs.add("算法", "人民邮电出版社", "9787115271464", Category.T);
+        Book jzb = bs.add("颈椎病康复指南", "湖北科学技术出版社", "9787535249340", Category.R);
 
         xiaom.borrow(hfPython);
         xiaom.returnBack(hfPython);
 
         y.borrow(algs);
         l.borrow(algs);
+        l.borrow(jzb);
 
     }
 
@@ -55,8 +93,6 @@ class Bookshelf {
         this.books = new ArrayList<Book>();
         this.lib = lib;
         // this.sorted = true;
-
-        System.out.println(lib + "的书架已经装好");
     }
 
     /**
@@ -108,6 +144,12 @@ enum Category {
     A, B, C, D, E, F, G, H, I, J, K, N, O, P, Q, R, S, T, U, V, X, Z
 }
 
+/**
+ * 加入图书馆的书。<br/>
+ * The Book added to library.
+ * 
+ * @author Faithful-Mind
+ */
 class Book implements Comparable<Book> {
     private final String name;
     // TODO add publication date, author, pages etc.
