@@ -26,10 +26,8 @@ public class Library {
         Reader y = new Reader("小袁");
         Reader l = new Reader("小刘");
 
-        Book hfPython = new Book("Head First Python", "O'Reilly", "9781449382674", Category.T);
-        bs.add(hfPython);
-        Book algs = new Book("算法", "人民邮电出版社", "9787115271464", Category.T);
-        bs.add(algs);
+        Book hfPython = bs.add("Head First Python", "O'Reilly", "9781449382674", Category.T);
+        Book algs = bs.add("算法", "人民邮电出版社", "9787115271464", Category.T);
 
         xiaom.borrow(hfPython);
         xiaom.returnBack(hfPython);
@@ -66,20 +64,26 @@ class Bookshelf {
      * 
      * @param b
      *            要添加的书。 book to add.
-     * @return 成功则返回 <b>true</b>，如果失败（书架满了）则返回 <b>false</b>。<br/>
-     *         <b>true</b> if success, <b>false</b> if failed (when bookshelf is
-     *         full).
+     * @param name
+     *            书名。 Book name
+     * @param press
+     *            出版社。 Press
+     * @param isbn
+     *            ISBN
+     * @param category
+     *            分类。 Category
+     * @return 成功则返回 <b>添加的图书 (Book 对象）</b>，如果失败则返回 <b>null</b>。<br/>
+     *         <b>The added Book object</b> if success, <b>null</b> if failed.
      */
-    boolean add(Book b) {
+    Book add(String name, String press, String isbn, Category category) {
+        Book b = new Book(name, press, isbn, category, lib.count + 1); // 因为ID从1开始。 Because id starts from 1.
         if (books.add(b)) {
             lib.count++;
-            b.setId(lib.count);
-
             System.out.println("添加了图书：\n\t" + b);
-            return true;
+            return b;
         } else {
-            System.out.println("图书添加失败“");
-            return false;
+            System.err.println("图书添加失败“");
+            return null;
         }
     }
 
@@ -105,29 +109,29 @@ enum Category {
 }
 
 class Book implements Comparable<Book> {
-    private String name;
+    private final String name;
     // TODO add publication date, author, pages etc.
     // private LocalDate publicationDate;
     // private Person author;
     // private int pages;
-    private String press;
-    private String isbn;
-    private Category category;
-    private int id; // it has an id only after it's added to a bookshelf. Id starts form 1.
+    private final String press;
+    private final String isbn;
+    private final Category category;
+    private final int id; // Id starts form 1.
     private boolean lent;
 
-    public Book(String name, String press, String isbn, Category category) {
+    public Book(String name, String press, String isbn, Category category, int id) {
         super();
         this.name = name;
         this.press = press;
         this.isbn = isbn.replace(" ", "").replace("-", "");
         this.category = category;
+        this.id = id;
         this.lent = false;
     }
 
     /**
-     * 用于排序,分类相同比较id。
-     * For sorting in a bookshelf. Compare its id if same category.
+     * 用于排序,分类相同比较id。 For sorting in a bookshelf. Compare its id if same category.
      */
     @Override
     public int compareTo(Book o) {
