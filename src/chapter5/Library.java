@@ -23,8 +23,8 @@ public class Library {
         Bookshelf bs = new Bookshelf(lib);
 
         Reader xiaom = new Reader("小明"); // 读者小明
-        Reader y = new Reader("小袁");
-        Reader l = new Reader("小刘");
+        Reader y = new Reader("小袁", () -> "这个人很勤快，签名都是手打的。");
+        Reader l = new Reader("小刘", () -> "学问笃实生光辉");
 
         Book hfPython = bs.add("Head First Python", "O'Reilly", "9781449382674", Category.T);
         Book algs = bs.add("算法", "人民邮电出版社", "9787115271464", Category.T);
@@ -179,13 +179,25 @@ class Book implements Comparable<Book> {
 
 abstract class Person {
     private String name;
+    private Status personalStatus;
 
     public Person(String name) {
         super();
         this.name = name;
+        this.personalStatus = () -> "这个人很懒，什么都没有留下。"; // 默认个性签名 Default personal status
+    }
+
+    public Person(String name, Status personalStatus) {
+        super();
+        this.name = name;
+        this.personalStatus = personalStatus;
     }
 
     public abstract String getJob();
+
+    public String getStatus() {
+        return personalStatus.getStatus();
+    }
 
     @Override
     public String toString() {
@@ -198,18 +210,35 @@ abstract class Person {
 
 }
 
+/**
+ * 个性签名<br/>
+ * Status
+ * 
+ * @author Faithful-Mind
+ */
+interface Status {
+    String getStatus();
+}
+
 class Reader extends Person {
-    private boolean isQualified; // 默认为真。 true by default
-    private List<Book> borrowedBooks;
+    private boolean isQualified = true; // 默认为真。 true by default
+    private List<Book> borrowedBooks = new ArrayList<Book>();;
 
     public Reader(String name) {
         super(name);
-        this.isQualified = true;
-        this.borrowedBooks = new ArrayList<Book>();
     }
 
     public Reader(String name, boolean isQualified) {
         this(name);
+        this.isQualified = isQualified;
+    }
+
+    public Reader(String name, Status personalStatus) {
+        super(name, personalStatus);
+    }
+
+    public Reader(String name, boolean isQualified, Status personalStatus) {
+        super(name, personalStatus);
         this.isQualified = isQualified;
     }
 
