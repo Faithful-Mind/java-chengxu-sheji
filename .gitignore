@@ -27,3 +27,6 @@ hs_err_pid*
 # Eclipse
 .classpath
 .project
+
+# Peer Review
+/src/peer/review
