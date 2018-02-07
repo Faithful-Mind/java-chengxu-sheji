@@ -14,8 +14,13 @@ public class NewsDemo {
         //订阅该社的新闻
         bbc.addListener(new MyListener());
         
-        //TODO 请在这里再加入一个Listener
-        
+        //Fixed 请在这里再加入一个Listener
+        bbc.addListener((e) -> {
+            if (e.level >= 5) {
+                System.out.println("Warning");
+            }
+            System.out.println("News: " + e.text);
+        });
         
         //新闻社启动其工作流程
         bbc.start();                
