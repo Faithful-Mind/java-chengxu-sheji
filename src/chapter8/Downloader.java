@@ -35,7 +35,7 @@ class Downloader
         throws IOException
     {
         try(InputStream input = url.openStream();
-            OutputStream output = new FileOutputStream(file))
+            OutputStream output = new FileOutputStream(System.getenv("TEMP") + "\\" + file))
         {
             byte[] data = new byte[1024];
             int length;
